@@ -1,7 +1,7 @@
 {
   "name": "Backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "send-email.js",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.20.3",
@@ -15,7 +15,7 @@
     "nodemon": "^3.1.7"
   },
   "scripts": {
-    "start": "contact.js",
-    "dev": "nodemon contact.js"
+    "start": "node send-email.js",
+    "dev": "nodemon send-email.js"
   }
 }
