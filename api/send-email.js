@@ -9,6 +9,13 @@ const cors = require("cors");
 
 const app = express();
 
+
+app.use(cors({
+  origin: ['https://www.exesenergy.co/'],
+  methods: ['GET', 'POST'],
+}));
+
+
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
