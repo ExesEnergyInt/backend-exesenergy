@@ -5,20 +5,16 @@ const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 
-
-
 const app = express();
 
-
+// Configure CORS
 app.use(cors({
-  origin: ['https://www.exesenergy.co/'],
+  origin: ['https://www.exesenergy.co', 'https://exesenergywebsite.vercel.app/'],
   methods: ['GET', 'POST'],
 }));
 
-
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -31,6 +27,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Email route
 app.post("/send-email", async (req, res) => {
   const { name, email, subject, message } = req.body;
 
@@ -56,9 +53,7 @@ app.post("/send-email", async (req, res) => {
     res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
     console.error("Error sending email:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to send email. Please try again later." });
+    res.status(500).json({ error: "Failed to send email. Please try again later." });
   }
 });
 
