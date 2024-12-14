@@ -16,7 +16,7 @@ app.use(
     origin: [
       "https://www.exesenergy.co",
       "https://exesenergywebsite.vercel.app/",
-      "http://localhost:3000", // Allow local testing
+      // "http://localhost:3000", // Allow local testing
     ],
     methods: ["GET", "POST"],
   })
@@ -78,15 +78,5 @@ app.post("/send-email", async (req, res) => {
   }
 });
 
-// Start server locally for development
-if (process.env.NODE_ENV !== "production") {
-  const PORT = 5000; // Define the port for local testing
-  app.listen(PORT, () => {
-    console.log(`Server is running locally on http://localhost:${PORT}`);
-  });
-}
-
 // Export app for Vercel deployment
-module.exports = (req, res) => {
-  app(req, res);
-};
+module.exports = app;
