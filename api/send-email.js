@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -7,14 +7,20 @@ const cors = require("cors");
 
 const app = express();
 
-// Configure CORS
-app.use(cors({
-  origin: ['https://www.exesenergy.co', 'https://exesenergywebsite.vercel.app/'],
-  methods: ['GET', 'POST'],
-}));
-
-// Middleware
+// Middleware for JSON parsing
 app.use(bodyParser.json());
+
+// Configure CORS
+app.use(
+  cors({
+    origin: [
+      "https://www.exesenergy.co",
+      "https://exesenergywebsite.vercel.app/",
+      "http://localhost:3000", // Allow local testing
+    ],
+    methods: ["GET", "POST"],
+  })
+);
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -22,16 +28,27 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // Use SSL
   auth: {
-    user: process.env.EMAIL_HOST,
-    pass: process.env.HOST_PASSWORD,
+    user: process.env.EMAIL_HOST, // Sender's email from environment variable
+    pass: process.env.HOST_PASSWORD, // Sender's password from environment variable
   },
+});
+
+// Verify Nodemailer configuration
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("Nodemailer transporter error:", error);
+  } else {
+    console.log("Nodemailer transporter is configured correctly.");
+  }
 });
 
 // Email route
 app.post("/send-email", async (req, res) => {
   const { name, email, subject, message } = req.body;
 
+  // Validate request body
   if (!name || !email || !subject || !message) {
+    console.log("Validation failed:", { name, email, subject, message });
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -49,15 +66,27 @@ app.post("/send-email", async (req, res) => {
   };
 
   try {
+    // Send email
     await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully.");
     res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ error: "Failed to send email. Please try again later." });
+    console.error("Error sending email:", error.message || error);
+    res
+      .status(500)
+      .json({ error: "Failed to send email. Please try again later." });
   }
 });
 
-// Export for Vercel
+// Start server locally for development
+if (process.env.NODE_ENV !== "production") {
+  const PORT = 5000; // Define the port for local testing
+  app.listen(PORT, () => {
+    console.log(`Server is running locally on http://localhost:${PORT}`);
+  });
+}
+
+// Export app for Vercel deployment
 module.exports = (req, res) => {
   app(req, res);
 };
