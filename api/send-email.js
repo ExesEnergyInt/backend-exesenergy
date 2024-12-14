@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // Use SSL
   auth: {
-    user: process.env.HOST_EMAIL,
+    user: process.env.EMAIL_HOST,
     pass: process.env.HOST_PASSWORD,
   },
 });
@@ -36,7 +36,7 @@ app.post("/send-email", async (req, res) => {
   }
 
   const mailOptions = {
-    from: process.env.HOST_EMAIL,
+    from: process.env.EMAIL_HOST,
     to: process.env.RECEPIENT_EMAIL,
     subject: `Contact Form Submission: ${subject}`,
     text: `You have a new message from your contact form:
