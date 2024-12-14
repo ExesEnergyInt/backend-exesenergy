@@ -13,11 +13,10 @@ app.use(bodyParser.json());
 // Configure CORS
 app.use(
   cors({
-    origin: [
-      "https://www.exesenergy.co",
-      "https://exesenergywebsite.vercel.app/",
-      // "http://localhost:3000", // Allow local testing
-    ],
+    origin:
+      process.env.NODE_ENV === "development"
+        ? "*"
+        : ["https://www.exesenergy.co", "https://exesenergywebsite.vercel.app"],
     methods: ["GET", "POST"],
   })
 );
